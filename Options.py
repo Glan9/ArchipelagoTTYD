@@ -51,6 +51,16 @@ class PitItems(Choice):
     default = 1
 
 
+class GlitchesRequired(Choice):
+    """
+    Whether the logic expects the use of glitches in order to reach items.
+    """
+    display_name = "Glitches Required"
+    option_glitchless = 1
+    option_glitches = 2
+    default = 1
+
+
 class TattleSanityOption(Toggle):
     """
     Creates a location for every enemy being tattled.

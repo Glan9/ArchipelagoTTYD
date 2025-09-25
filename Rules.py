@@ -4,16 +4,32 @@ from typing import Any
 from worlds.generic.Rules import add_rule
 from . import StateLogic, location_id_to_name, tattlesanity_region, Goal, PitItems, limit_pit, \
     pit_exclusive_tattle_stars_required
-from .Options import PalaceSkip
+from .Options import PalaceSkip, GlitchesRequired
 
 if typing.TYPE_CHECKING:
     from . import TTYDWorld
 
 
 def set_rules(world: "TTYDWorld"):
-    for location, rule in get_rules_dict(world).items():
+    glitchless_dict = get_rules_dict(world)
+    glitched_dict = get_rules_dict(world)
+
+    for location, rule in glitchless_dict.items():
         if location not in world.disabled_locations:
-            add_rule(world.multiworld.get_location(location, world.player), rule)
+            # For glitched logic, check if a glitched rule exists for this location
+            if world.options.glitches_required == GlitchesRequired.option_glitches:
+                # If a glitched logic rule exists, the final rule is (glitchless rule OR glitched rule)
+                if location in glitched_dict:
+                    add_rule(
+                        world.multiworld.get_location(location, world.player),
+                        lambda state: rule(state) or glitched_dict[location](state)
+                    )
+                else:
+                    add_rule(
+                        world.multiworld.get_location(location, world.player),
+                        rule
+                    )
+
 
 def set_tattle_rules(world: "TTYDWorld"):
     for location in tattlesanity_region:
@@ -213,39 +229,37 @@ def get_rules_dict(world: "TTYDWorld") -> dict[str, Any]:
             lambda state: StateLogic.key_any(state, world.player) and state.has("Puni Orb", world.player),
         "Great Tree 100-Puni Pedestal: Coin":
             lambda state: (state.has("Red Key", world.player) and state.has("Puni Orb", world.player)
-                           and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)
-                           and StateLogic.super_boots(state, world.player)),
+                           and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)),
         "Great Tree 100-Puni Pedestal: Star Piece":
             lambda state: (state.has("Red Key", world.player) and state.has("Puni Orb", world.player)
-                           and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)
-                           and StateLogic.super_boots(state, world.player)),
+                           and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)),
         "Great Tree Fake Pedestal: Star Piece":
             lambda state: (state.has("Red Key", world.player) and state.has("Puni Orb", world.player)
                            and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)),
         "Great Tree Entrance: Emerald Star":
             lambda state: (state.has("Red Key", world.player) and state.has("Puni Orb", world.player)
                            and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)
-                           and state.has("Koops", world.player) and StateLogic.super_boots(state, world.player)),
+                           and (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and StateLogic.super_boots(state, world.player)),
         "Great Tree Elevator Pedestal: Mushroom":
             lambda state: (state.has("Red Key", world.player) and state.has("Puni Orb", world.player)
                            and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)
-                           and state.has("Koops", world.player) and StateLogic.super_boots(state, world.player)),
+                           and (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and StateLogic.super_boots(state, world.player)),
         "Great Tree Escape Ambush Room: Star Piece":
             lambda state: (state.has("Red Key", world.player) and state.has("Puni Orb", world.player)
                            and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)
-                           and state.has("Koops", world.player) and StateLogic.super_boots(state, world.player)),
+                           and (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and StateLogic.super_boots(state, world.player)),
         "Great Tree Pool Room: Dizzy Dial":
             lambda state: (state.has("Red Key", world.player) and state.has("Puni Orb", world.player)
                            and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)
-                           and state.has("Koops", world.player) and StateLogic.super_boots(state, world.player)),
+                           and (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and StateLogic.super_boots(state, world.player)),
         "Great Tree Pool Room: Shine Sprite":
             lambda state: (state.has("Red Key", world.player) and state.has("Puni Orb", world.player)
                            and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)
-                           and state.has("Koops", world.player) and StateLogic.super_boots(state, world.player)),
+                           and (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and StateLogic.super_boots(state, world.player)),
         "Great Tree Pool Room: Shrink Stomp":
             lambda state: (state.has("Red Key", world.player) and state.has("Puni Orb", world.player)
                            and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)
-                           and state.has("Koops", world.player) and StateLogic.super_boots(state, world.player)),
+                           and (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and StateLogic.super_boots(state, world.player)),
         "Great Tree Lower Duplex: Coin":
             lambda state: (state.has("Red Key", world.player) and state.has("Puni Orb", world.player)
                            and state.has("Flurrie", world.player) and state.has("Blue Key", world.player)
@@ -295,12 +309,11 @@ def get_rules_dict(world: "TTYDWorld") -> dict[str, Any]:
             lambda state: (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Koops", world.player),
         "Hooktail's Castle Prison Entrance: Paper Mode":
             lambda state: ((state.has("Yoshi", world.player) or state.has("Plane Mode", world.player))
-                           and state.has("Koops", world.player) and state.has("Castle Key", world.player, 1)
-                           and state.has("Black Key (Paper)", world.player)),
+                           and (state.has("Koops", world.player) or state.has("Paper Mode", world.player) or state.has("Bobbery", world.player))
+                           and state.has("Castle Key", world.player, 1) and state.has("Black Key (Paper)", world.player)),
         "Hooktail's Castle Prison Entrance: Attack FX R":
             lambda state: ((state.has("Yoshi", world.player) or state.has("Plane Mode", world.player))
-                           and state.has("Koops", world.player) and state.has("Castle Key", world.player, 1)
-                           and state.has("Paper Mode", world.player)),
+                           and state.has("Paper Mode", world.player) and state.has("Castle Key", world.player, 1)),
         "Hooktail's Castle Spikes Room: Black Key (Paper)":
             lambda state: ((state.has("Yoshi", world.player) or state.has("Plane Mode", world.player))
                            and state.has("Koops", world.player) and state.has("Castle Key", world.player, 1)),
@@ -309,7 +322,7 @@ def get_rules_dict(world: "TTYDWorld") -> dict[str, Any]:
                            or (state.has("Plane Mode", world.player) and state.has("Paper Mode", world.player)))
                            and state.has("Koops", world.player) and state.has("Castle Key", world.player, 2)),
         "Hooktail's Castle Plane Rafters Room: Star Piece":
-            lambda state: (state.has("Plane Mode", world.player) and state.has("Koops", world.player)
+            lambda state: ((state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Koops", world.player)
                            and state.has("Castle Key", world.player, 3) and state.has("Paper Mode", world.player)),
         "Hooktail's Castle Hooktail's Room: Diamond Star":
             lambda state: (state.has("Plane Mode", world.player) and state.has("Koops", world.player)
@@ -328,8 +341,7 @@ def get_rules_dict(world: "TTYDWorld") -> dict[str, Any]:
                            and state.has("Koops", world.player) and state.has("Castle Key", world.player, 2)),
         "Hooktail's Castle Up Arrow Room: Up Arrow":
             lambda state: ((state.has("Yoshi", world.player) or state.has("Plane Mode", world.player))
-                           and state.has("Koops", world.player) and state.has("Castle Key", world.player, 1)
-                           and state.has("Bobbery", world.player)),
+                           and state.has("Bobbery", world.player) and state.has("Castle Key", world.player, 1)),
         "Keelhaul Key Landing Site: Star Piece":
             lambda state: StateLogic.super_boots(state, world.player),
         "Keelhaul Key Jungle Winding Climb: Coin 2":
@@ -362,49 +374,49 @@ def get_rules_dict(world: "TTYDWorld") -> dict[str, Any]:
         "Keelhaul Key Town: Chuckola Cola":
             lambda state: state.has("Yoshi", world.player) and state.has("Coconut", world.player),
         "Palace of Shadow Dark Bones Room: Palace Key":
-            lambda state: StateLogic.tube_curse(state, world.player),
+            lambda state: (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)),
         "Palace of Shadow Second Bullet Bill Hallway: Ultra Shroom":
-            lambda state: StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player),
+            lambda state: (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player),
         "Palace of Shadow Large Open Room: Coin":
-            lambda state: StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player),
+            lambda state: (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player),
         "Palace of Shadow Large Open Room: Jammin' Jelly":
-            lambda state: StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player),
+            lambda state: (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player),
         "Palace of Shadow Large Open Room: P-Up, D-Down P":
-            lambda state: StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player),
+            lambda state: (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player),
         "Palace of Shadow Gloomtail Room: Star Key":
-            lambda state: StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player),
+            lambda state: (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player),
         "Palace of Shadow Gloomtail Room: Jammin' Jelly":
-            lambda state: StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player)
+            lambda state: (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
                           and state.has("Bobbery", world.player),
         "Palace of Shadow Gloomtail Room: Ultra Shroom":
-            lambda state: StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player)
+            lambda state: (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
                           and state.has("Bobbery", world.player),
         "Riddle Tower Floor 1 NW: Palace Key (Tower)":
-            lambda state: (StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player)
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
                            and state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)
                            and StateLogic.ultra_hammer(state, world.player)),
         "Riddle Tower Floor 1 NE: Palace Key (Tower)":
-            lambda state: (StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player)
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
                            and state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)),
         "Riddle Tower Floor 1 SW: Palace Key (Tower)":
-            lambda state: (StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player)
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
                            and state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)),
         "Riddle Tower Floor 1 SE: Palace Key (Tower)":
-            lambda state: (StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player)
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
                            and state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)
                            and state.has("Flurrie", world.player)),
         "Riddle Tower Floor 2 NW: Palace Key (Tower)":
-            lambda state: (StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player)
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
                            and state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)
                            and StateLogic.ultra_hammer(state, world.player)),
         "Riddle Tower Floor 2 NE: Palace Key (Tower)":
-            lambda state: (StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player)
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
                            and state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)),
         "Riddle Tower Floor 2 SW: Palace Key (Tower)":
-            lambda state: (StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player)
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
                            and state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)),
         "Riddle Tower Floor 2 SE: Palace Key (Tower)":
-            lambda state: (StateLogic.tube_curse(state, world.player) and state.has("Palace Key", world.player)
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
                            and state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)
                            and state.has("Vivian", world.player)),
         "Petal Meadows Field: Happy Heart":
@@ -445,19 +457,19 @@ def get_rules_dict(world: "TTYDWorld") -> dict[str, Any]:
                           and StateLogic.super_boots(state, world.player),
         "Pirate's Grotto Chest Boat: Black Key (Boat)":
             lambda state: state.has("Yoshi", world.player) and state.has("Grotto Key", world.player)
-                          and StateLogic.tube_curse(state, world.player),
+                          and (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)),
         "Pirate's Grotto Chest Boat: P-Down, D-Up":
             lambda state: state.has("Yoshi", world.player) and state.has("Grotto Key", world.player)
-                          and StateLogic.tube_curse(state, world.player),
+                          and (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)),
         "Pirate's Grotto Barrel Room: 10 Coins":
             lambda state: state.has("Yoshi", world.player) and state.has("Grotto Key", world.player)
-                          and StateLogic.tube_curse(state, world.player),
+                          and (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)),
         "Pirate's Grotto Barrel Room: Shine Sprite":
             lambda state: state.has("Yoshi", world.player) and state.has("Grotto Key", world.player)
-                          and StateLogic.tube_curse(state, world.player),
+                          and (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)),
         "Pirate's Grotto Chest Boat: Boat Mode":
             lambda state: (state.has("Yoshi", world.player) and state.has("Grotto Key", world.player)
-                           and StateLogic.tube_curse(state, world.player)
+                           and (StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player))
                            and state.has("Black Key (Boat)", world.player)),
         "Poshley Heights Station: Goldbob Guide":
             lambda state: StateLogic.fahr_outpost(state, world.player) and state.has("Bobbery", world.player),
@@ -769,6 +781,338 @@ def get_rules_dict(world: "TTYDWorld") -> dict[str, Any]:
             lambda state: state.has("stars", world.player, 5),
         "Pit of 100 Trials Floor 100: Return Postage":
             lambda state: state.has("stars", world.player, 5)
+    }
+
+def get_rules_dict_glitches(world: "TTYDWorld") -> dict[str, Any]:
+    # Yes, I know some of these cases end up being redundant.
+    # Some of them are just really complex and I'd rather prioritize readability/being able to keep it all straight
+    # than worry about fully optimizing the written logic.
+    return {
+        "Creepy Steeple Main Hall: Steeple Key":
+            lambda state: StateLogic.can_super_jump(state, world.player),
+
+        "Great Tree 100-Puni Pedestal: Coin":
+            lambda state: (state.has("Puni Orb", world.player) and (
+                            (state.has("Blue Key", world.player) and state.has("Flurrie", world.player))
+                            or 
+                            (state.has("Goombella", world.player) and state.has("Paper Mode", world.player) and state.has("Red Key", world.player))
+                          )),
+        "Great Tree 100-Puni Pedestal: Star Piece":
+            lambda state: (state.has("Puni Orb", world.player) and (
+                            (state.has("Blue Key", world.player) and state.has("Flurrie", world.player))
+                            or 
+                            (state.has("Goombella", world.player) and state.has("Paper Mode", world.player) and state.has("Red Key", world.player))
+                          )),
+        "Great Tree Fake Pedestal: Star Piece":
+            lambda state: (state.has("Puni Orb", world.player) and (
+                            (state.has("Blue Key", world.player) and state.has("Flurrie", world.player))
+                            or 
+                            (state.has("Goombella", world.player) and state.has("Paper Mode", world.player) and state.has("Red Key", world.player))
+                          )),
+        "Great Tree Entrance: Emerald Star":
+            lambda state: (state.has("Puni Orb", world.player) and state.has("Paper Mode", world.player) and (
+                            (state.has("Blue Key", world.player) and state.has("Flurrie", world.player))
+                            or 
+                            (state.has("Goombella", world.player) and state.has("Red Key", world.player))
+                          )),
+        "Great Tree Elevator Pedestal: Mushroom":
+            lambda state: (state.has("Puni Orb", world.player) and state.has("Paper Mode", world.player) and (
+                            (state.has("Blue Key", world.player) and state.has("Flurrie", world.player))
+                            or 
+                            (state.has("Goombella", world.player) and state.has("Red Key", world.player))
+                          )),
+        "Great Tree Escape Ambush Room: Star Piece":
+            lambda state: (state.has("Puni Orb", world.player) and state.has("Paper Mode", world.player) and (
+                            (state.has("Blue Key", world.player) and state.has("Flurrie", world.player))
+                            or 
+                            (state.has("Goombella", world.player) and state.has("Red Key", world.player))
+                          )),
+        "Great Tree Pool Room: Dizzy Dial":
+            lambda state: (state.has("Puni Orb", world.player) and state.has("Paper Mode", world.player) and (
+                            (state.has("Blue Key", world.player) and state.has("Flurrie", world.player))
+                            or 
+                            (state.has("Goombella", world.player) and state.has("Red Key", world.player))
+                          ) and (state.has("Koops", world.player) or state.has("Yoshi", world.player))),
+        "Great Tree Pool Room: Shine Sprite":
+            lambda state: (state.has("Puni Orb", world.player) and state.has("Paper Mode", world.player) and (
+                            (state.has("Blue Key", world.player) and state.has("Flurrie", world.player))
+                            or 
+                            (state.has("Goombella", world.player) and state.has("Red Key", world.player))
+                          ) and (state.has("Koops", world.player) or state.has("Yoshi", world.player)) or StateLogic.ultra_boots(state, world.player)),
+        "Great Tree Pool Room: Shrink Stomp":
+            lambda state: (state.has("Puni Orb", world.player) and state.has("Paper Mode", world.player) and (
+                            (state.has("Blue Key", world.player) and state.has("Flurrie", world.player))
+                            or 
+                            (state.has("Goombella", world.player) and state.has("Red Key", world.player))
+                          ) and (state.has("Koops", world.player) or state.has("Yoshi", world.player))),
+        "Great Tree Lower Duplex: Coin":
+            lambda state: (state.has("Puni Orb", world.player) and state.has("Paper Mode", world.player) and (
+                            (state.has("Blue Key", world.player) and state.has("Flurrie", world.player))
+                            or 
+                            (state.has("Goombella", world.player) and state.has("Red Key", world.player))
+                          )),
+
+        "Glitzville Arena: Gold Star":
+            lambda state: StateLogic.super_boots(state, world.player) and StateLogic.super_hammer(state, world.player),
+        "Glitzville Main Square: Power Plus P":
+            lambda state: StateLogic.can_super_jump(state, world.player),
+        "Glitzville Main Square: Star Piece 5":
+            lambda state: StateLogic.can_super_jump(state, world.player) and (
+                        state.has("Koops", world.player) or StateLogic.tube_curse(state, world.player)),
+
+        "Hooktail's Castle Drawbridge: HP Plus":
+            lambda state: state.has("Plane Mode", world.player),
+        "Hooktail's Castle Stair Switch Room: Star Piece 2":
+            lambda state: (
+                            # to get to central staircase
+                            (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Castle Key", world.player, 1)
+                            and (
+                                # to superjump upstairs
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player) and state.has("Bobbery", world.player))
+                                or
+                                # Go the normal way, additionally allowing Yoshi as a means to cross the bridge room
+                                ((state.has("Koops", world.player) or (state.has("Bobbery", world.player) and state.has("Yoshi", world.player))) and state.has("Castle Key", world.player, 2))
+                            )
+                          ),
+        "Hooktail's Castle Life Shroom Room: Life Shroom":
+            lambda state: (
+                            # to get to central staircase
+                            (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Castle Key", world.player, 1)
+                            # 2 ways to reach the life shroom room
+                            and (
+                                # to superjump upstairs
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player) and state.has("Bobbery", world.player))
+                                or
+                                # Go the normal way, additionally allowing Yoshi as a means to cross the bridge room
+                                ((state.has("Koops", world.player) or (state.has("Bobbery", world.player) and state.has("Yoshi", world.player)) and state.has("Castle Key", world.player, 2)))
+                            )
+                            # to hit the block switch
+                            and (state.has("Koops", world.player) or state.has("Bobbery", world.player))
+                            # to get the item
+                            and (state.has("Koops", world.player) or state.has("Yoshi", world.player) or state.has("Paper Mode", world.player))
+                          ),
+        "Hooktail's Castle Storeroom: Castle Key":
+            lambda state: (
+                            # to get to central staircase
+                            (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Castle Key", world.player, 1)
+                            and (
+                                # to superjump upstairs
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player) and state.has("Bobbery", world.player))
+                                or
+                                # Go the normal way, additionally allowing Yoshi as a means to cross the bridge room
+                                ((state.has("Koops", world.player) or (state.has("Bobbery", world.player) and state.has("Yoshi", world.player))) and state.has("Castle Key", world.player, 2))
+                                # both of these are sufficient to hit the block switch
+                            )
+                          ),
+        "Hooktail's Castle Storeroom: Honey Syrup":
+            lambda state: (
+                            # to get to central staircase
+                            (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Castle Key", world.player, 1)
+                            and (
+                                # to superjump upstairs
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player) and state.has("Bobbery", world.player))
+                                or
+                                # Go the normal way, additionally allowing Yoshi as a means to cross the bridge room
+                                ((state.has("Koops", world.player) or (state.has("Bobbery", world.player) and state.has("Yoshi", world.player))) and state.has("Castle Key", world.player, 2))
+                                # both of these are sufficient to hit the block switch
+                            )
+                          ),
+        "Hooktail's Castle Storeroom: Mushroom":
+            lambda state: (
+                            # to get to central staircase
+                            (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Castle Key", world.player, 1)
+                            and (
+                                # to superjump upstairs
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player) and state.has("Bobbery", world.player))
+                                or
+                                # Go the normal way, additionally allowing Yoshi as a means to cross the bridge room
+                                ((state.has("Koops", world.player) or (state.has("Bobbery", world.player) and state.has("Yoshi", world.player))) and state.has("Castle Key", world.player, 2))
+                                # both of these are sufficient to hit the block switch
+                            )
+                          ),
+        "Hooktail's Castle Storeroom: Shine Sprite":
+            lambda state: (
+                            # to get to central staircase
+                            (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Castle Key", world.player, 1)
+                            and (
+                                # to superjump upstairs
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player) and state.has("Bobbery", world.player))
+                                or
+                                # Go the normal way, additionally allowing Yoshi as a means to cross the bridge room
+                                ((state.has("Koops", world.player) or (state.has("Bobbery", world.player) and state.has("Yoshi", world.player))) and state.has("Castle Key", world.player, 2))
+                                # both of these are sufficient to hit the block switch
+                            )
+                          ),
+        "Hooktail's Castle Plane Rafters Room: Star Piece":
+            lambda state: (
+                            # to get to central staircase
+                            (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Castle Key", world.player, 1)
+                            and (
+                                # to superjump upstairs
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player) and state.has("Bobbery", world.player))
+                                or
+                                # Go the normal way, additionally allowing Yoshi as a means to cross the bridge room
+                                ((state.has("Koops", world.player) or (state.has("Bobbery", world.player) and state.has("Yoshi", world.player))) and state.has("Castle Key", world.player, 3))
+                            )
+                            and (StateLogic.ultra_boots(state, world.player) or state.has("Paper Mode", world.player)) # ultra boots jump or paper mode through bars. Previous conditions cover raising the block.
+                          ),
+        "Hooktail's Castle Stair Central Staircase: Castle Key":
+            lambda state: (
+                            # to get to central staircase
+                            (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Castle Key", world.player, 1)
+                            and (
+                                # to superjump upstairs (can superjump straight there, but Koops and Yoshi both allowing grabbing it across the gap anyway)
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player) and state.has("Bobbery", world.player))
+                                or
+                                # Go the normal way, additionally allowing Yoshi as a means to cross the bridge room
+                                ((state.has("Koops", world.player) or (state.has("Bobbery", world.player) and state.has("Yoshi", world.player))) and state.has("Castle Key", world.player, 3))
+                            )
+                            # Yoshi and Plane Mode both allow clearing the rafters room (Yoshi is a kind of precise hover)
+                          ),
+        "Hooktail's Castle Stair Central Staircase: Last Stand P":
+            lambda state: (
+                            # to get to central staircase
+                            (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Castle Key", world.player, 1)
+                            and (
+                                # to superjump upstairs (can superjump straight there, but Koops and Yoshi both allowing grabbing it across the gap anyway)
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player) and state.has("Bobbery", world.player))
+                                or
+                                # Go the normal way, additionally allowing Yoshi as a means to cross the bridge room
+                                ((state.has("Koops", world.player) or (state.has("Bobbery", world.player) and state.has("Yoshi", world.player))) and state.has("Castle Key", world.player, 3))
+                            )
+                            # Yoshi and Plane Mode both allow clearing the rafters room (Yoshi is a kind of precise hover)
+                          ),
+        "Hooktail's Castle Stair Central Staircase: Shine Sprite":
+            lambda state: (
+                            # to get to central staircase
+                            (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Castle Key", world.player, 1)
+                            and (
+                                # to superjump upstairs (can superjump straight there, but Koops and Yoshi both allowing grabbing it across the gap anyway)
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player) and state.has("Bobbery", world.player))
+                                or
+                                # Go the normal way, additionally allowing Yoshi as a means to cross the bridge room
+                                ((state.has("Koops", world.player) or (state.has("Bobbery", world.player) and state.has("Yoshi", world.player))) and state.has("Castle Key", world.player, 3))
+                            )
+                            # Yoshi and Plane Mode both allow clearing the rafters room (Yoshi is a kind of precise hover)
+                          ),
+        "Hooktail's Castle Stair Central Staircase: Star Piece":
+            lambda state: (
+                            state.has("Yoshi", world.player) and state.has("Bobbery", world.player)
+                            and (
+                                state.has("Castle Key", world.player, 3)
+                                or
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player))
+                            )
+                          )
+        "Hooktail's Castle Hooktail's Room: Diamond Star":
+            lambda state: (
+                            # to get to central staircase
+                            (state.has("Yoshi", world.player) or state.has("Plane Mode", world.player)) and state.has("Castle Key", world.player, 4)
+                            and (
+                                # to superjump upstairs (can superjump straight there, but Koops and Yoshi both allowing grabbing it across the gap anyway)
+                                (StateLogic.can_super_jump(state, world.player) and StateLogic.tube_curse(state, world.player) and state.has("Bobbery", world.player))
+                                or
+                                # Go the normal way, additionally allowing Yoshi as a means to cross the bridge room
+                                ((state.has("Koops", world.player) or (state.has("Bobbery", world.player) and state.has("Yoshi", world.player))))
+                            )
+                            # Yoshi and Plane Mode both allow clearing the rafters room (Yoshi is a kind of precise hover)
+                          ),
+
+        "Keelhaul Key Jungle Winding Climb: Coin 2":
+            lambda state: StateLogic.can_super_jump(state, world.player),
+        "Keelhaul Key Jungle Winding Climb: Thunder Rage":
+            lambda state: StateLogic.can_super_jump(state, world.player),
+        "Keelhaul Key Jungle Bridge: Inn Coupon":
+            lambda state: StateLogic.can_super_jump(state, world.player),
+        "Keelhaul Key Jungle Bridge: Shine Sprite":
+            lambda state: StateLogic.can_super_jump(state, world.player),
+        "Keelhaul Key Grotto Entrance: Spite Pouch":
+            lambda state: StateLogic.can_super_jump(state, world.player),
+        "Keelhaul Key Grotto Entrance: Star Piece":
+            lambda state: StateLogic.can_super_jump(state, world.player),
+        "Keelhaul Key Jungle Bridge: Ice Power":
+            lambda state: StateLogic.can_super_jump(state, world.player) and state.has("Paper Mode", world.player),
+        "Keelhaul Key Jungle Winding Climb: Jammin' Jelly":
+            lambda state: StateLogic.can_super_jump(state, world.player) and (StateLogic.super_hammer(state, world.player) or state.has("Bobbery", world.player)), # ultra boots method after super jump is too annoying, don't require it
+        "Keelhaul Key Grotto Entrance: Bobbery":
+            lambda state: StateLogic.can_super_jump(state, world.player) and state.has("Chuckola Cola", world.player),
+        "Keelhaul Key Grotto Entrance: Skull Gem":
+            lambda state: StateLogic.can_super_jump(state, world.player) and state.has("Coconut", world.player),
+        "Keelhaul Key Town: Chuckola Cola":
+            lambda state: StateLogic.can_super_jump(state, world.player) and state.has("Coconut", world.player),
+
+        "Palace of Shadow Dark Bones Room: Palace Key":
+            lambda state: (state.has("Koops", world.player) or state.has("Yoshi", world.player)),
+        "Palace of Shadow Second Bullet Bill Hallway: Ultra Shroom":
+            lambda state: (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and state.has("Palace Key", world.player),
+        "Palace of Shadow Large Open Room: Coin":
+            lambda state: (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and state.has("Palace Key", world.player),
+        "Palace of Shadow Large Open Room: Jammin' Jelly":
+            lambda state: (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and state.has("Palace Key", world.player),
+        "Palace of Shadow Large Open Room: P-Up, D-Down P":
+            lambda state: (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and state.has("Palace Key", world.player),
+        "Palace of Shadow Gloomtail Room: Star Key":
+            lambda state: (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and state.has("Palace Key", world.player),
+        "Palace of Shadow Gloomtail Room: Jammin' Jelly":
+            lambda state: (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and state.has("Palace Key", world.player)
+                          and state.has("Bobbery", world.player),
+        "Palace of Shadow Gloomtail Room: Ultra Shroom":
+            lambda state: (state.has("Koops", world.player) or state.has("Yoshi", world.player)) and state.has("Palace Key", world.player)
+                          and state.has("Bobbery", world.player),
+
+        "Riddle Tower Floor 1 NW: Palace Key (Tower)":
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
+                           and ((state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)) or StateLogic.can_super_jump(state, world.player))
+                           and StateLogic.ultra_hammer(state, world.player)),
+        "Riddle Tower Floor 1 NE: Palace Key (Tower)":
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
+                           and ((state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)) or StateLogic.can_super_jump(state, world.player))),
+        "Riddle Tower Floor 1 SW: Palace Key (Tower)":
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
+                           and ((state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)) or StateLogic.can_super_jump(state, world.player))),
+        "Riddle Tower Floor 1 SE: Palace Key (Tower)":
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
+                           and ((state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)) or StateLogic.can_super_jump(state, world.player))
+                           and state.has("Flurrie", world.player)),
+        "Riddle Tower Floor 2 NW: Palace Key (Tower)":
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
+                           and ((state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)) or StateLogic.can_super_jump(state, world.player))
+                           and StateLogic.ultra_hammer(state, world.player)),
+        "Riddle Tower Floor 2 NE: Palace Key (Tower)":
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
+                           and state.has("Bobbery", world.player) and (state.has("Boat Mode", world.player) or StateLogic.can_super_jump(state, world.player))),
+        "Riddle Tower Floor 2 SW: Palace Key (Tower)":
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
+                           and ((state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)) or StateLogic.can_super_jump(state, world.player))),
+        "Riddle Tower Floor 2 SE: Palace Key (Tower)":
+            lambda state: ((StateLogic.tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", world.player)
+                           and ((state.has("Bobbery", world.player) and state.has("Boat Mode", world.player)) or StateLogic.can_super_jump(state, world.player))
+                           and state.has("Vivian", world.player)),
+
+        "Pirate's Grotto Gate Handle Room: Gate Handle":
+            lambda state: StateLogic.tube_curse(state, world.player),
+        "Pirate's Grotto Staircase: Defend Plus P":
+            lambda state: state.has("Yoshi", world.player) and state.has("Bobbery", world.player) and state.has("Boat Mode", world.player),
+        "Pirate's Grotto Cortez' Hoard: Sapphire Star": # TODO: figure out how to hangle backdoor grotto
+            lambda state: state.has("Yoshi", world.player) and state.has("Bobbery", world.player)
+                           and state.has("Boat Mode", world.player) and state.has("Gate Handle", world.player)
+                           and state.has("Plane Mode", world.player),
+        "Pirate's Grotto Chest Boat: Black Key (Boat)":
+            lambda state: state.has("Yoshi", world.player) and state.has("Grotto Key", world.player)
+                          and StateLogic.ultra_boots(state, world.player) and state.has("Goombella", world.player),
+        "Pirate's Grotto Chest Boat: P-Down, D-Up":
+            lambda state: state.has("Yoshi", world.player) and state.has("Grotto Key", world.player)
+                          and StateLogic.ultra_boots(state, world.player) and state.has("Goombella", world.player),
+        "Pirate's Grotto Barrel Room: 10 Coins":
+            lambda state: state.has("Yoshi", world.player) and state.has("Grotto Key", world.player)
+                          and StateLogic.ultra_boots(state, world.player) and state.has("Goombella", world.player),
+        "Pirate's Grotto Barrel Room: Shine Sprite":
+            lambda state: state.has("Yoshi", world.player) and state.has("Grotto Key", world.player)
+                          and StateLogic.ultra_boots(state, world.player) and state.has("Goombella", world.player),
+        "Pirate's Grotto Chest Boat: Boat Mode":
+            lambda state: (state.has("Yoshi", world.player) and state.has("Grotto Key", world.player)
+                           and StateLogic.ultra_boots(state, world.player) and state.has("Goombella", world.player)
+                           and state.has("Black Key (Boat)", world.player)),
     }
 
 

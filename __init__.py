@@ -10,7 +10,7 @@ from .Data import starting_partners, limit_eight, stars, chapter_items, limited_
     pit_exclusive_tattle_stars_required
 from .Locations import all_locations, location_table, pit, location_id_to_name, TTYDLocation, locationName_to_data, \
     palace, riddle_tower, tattlesanity_region
-from .Options import TTYDOptions, YoshiColor, StartingPartner, PitItems, LimitChapterEight, Goal
+from .Options import TTYDOptions, YoshiColor, StartingPartner, PitItems, LimitChapterEight, Goal, GlitchesRequired
 from .Items import TTYDItem, itemList, item_frequencies, item_table, ItemData
 from .Regions import create_regions, connect_regions, get_regions_dict, register_indirect_connections
 from .Rom import TTYDProcedurePatch, write_files
@@ -304,7 +304,8 @@ class TTYDWorld(World):
 
     def create_item(self, name: str) -> TTYDItem:
         item = item_table.get(name, ItemData(None, name, ItemClassification.progression))
-        progression = (ItemClassification.useful if item.itemName == "Goombella" and not self.options.tattlesanity else item.progression)
+        progression = (ItemClassification.useful if item.itemName == "Goombella" and not (self.options.tattlesanity or self.options.glitches_required == GlitchesRequired.option_glitches) else ItemClassification.progression)
+        progression = (ItemClassification.useful if item.itemName == "Ms. Mowz" and self.options.glitches_required != GlitchesRequired.option_glitches else ItemClassification.progression)
         return TTYDItem(item.itemName, progression, item.code, self.player)
 
     def lock_item(self, location: str, item_name: str):

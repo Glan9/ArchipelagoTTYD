@@ -108,7 +108,7 @@ def palace(state, player, chapters: int):
 
 
 def riddle_tower(state, player):
-    return tube_curse(state, player) and state.has("Palace Key", player) and state.has("Bobbery", player) and state.has("Boat Mode", player) and state.has("Star Key", player) and state.has("Palace Key (Tower)", player, 8)
+    return (tube_curse(state, world.player) or state.has("Vivian", world.player)) and state.has("Palace Key", player) and state.has("Bobbery", player) and state.has("Boat Mode", player) and state.has("Star Key", player) and state.has("Palace Key (Tower)", player, 8)
 
 
 def sewer_westside(state, player):
@@ -120,3 +120,13 @@ def sewer_westside_ground(state, player):
 
 def key_any(state, player):
     return state.has("Red Key", player) or state.has("Blue Key", player)
+
+
+# Used for glitched logic. Superjump logic will only consider using Koops with either the teleporter door or Bobbery's door.
+# This is because it's impossible to be sure that the player will always be able to get jump storage with Yoshi at any given point.
+def can_super_jump(state, player):
+    return state.has("Koops", player) and (
+        state.has("Paper Mode", player) # TRE
+        or
+        (state.has("Goombella", player) and state.has("Yoshi", player) and ultra_boots(state, player)) # Yoshi teleport into Bobbery's house
+    )
