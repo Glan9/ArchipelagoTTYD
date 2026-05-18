@@ -280,6 +280,9 @@
     ]
   },
 
+  "Boggly Woods Plane Panel Room: Shine Sprite": {
+    "has": "Yoshi"
+  },
   "Great Tree 100-Puni Pedestal: Coin": {
     "function": "hundred_jabbi_fight"
   },

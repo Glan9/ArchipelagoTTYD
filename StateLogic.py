@@ -244,7 +244,7 @@ def hit_distant_object(state, player):
 def super_jump(state, player):
     return state.has("Koops", player) and (
         # TRE
-        state.has("Paper Mode", player)
+        (state.has("Paper Mode", player) and state.has("Elevator Key 2", player))
         or
         # Yoshi teleport into Bobbery's house
         # If you can tube mode in, then you can already do TRE
