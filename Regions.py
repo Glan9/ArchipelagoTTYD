@@ -3,6 +3,7 @@ import typing
 from BaseClasses import Region
 from .Locations import (TTYDLocation, shadow_queen, LocationData)
 from . import StateLogic, get_locations_by_tags
+from .Options import GlitchesRequired
 
 if typing.TYPE_CHECKING:
     from . import TTYDWorld
@@ -28,12 +29,17 @@ def get_regions_dict() -> dict[str, list[LocationData]]:
         "Twilight Trail": get_locations_by_tags("twilight_trail"),
         "Creepy Steeple": get_locations_by_tags("creepy_steeple"),
         "Keelhaul Key": get_locations_by_tags("keelhaul_key"),
-        "Pirate's Grotto": get_locations_by_tags("pirates_grotto"),
+        "Pirate's Grotto (Main)": get_locations_by_tags("pirates_grotto_main"),
+        "Pirate's Grotto (Ship)": get_locations_by_tags("pirates_grotto_ship"),
+        "Pirate's Grotto (End)": get_locations_by_tags("pirates_grotto_end"),
         "Excess Express": get_locations_by_tags("excess_express"),
         "Riverside Station": get_locations_by_tags("riverside"),
         "Poshley Heights": get_locations_by_tags("poshley_heights"),
         "Fahr Outpost": get_locations_by_tags("fahr_outpost"),
-        "X-Naut Fortress": get_locations_by_tags("xnaut_fortress"),
+        "X-Naut Fortress (Level 1)": get_locations_by_tags("xnaut_fortress_level_1"),
+        "X-Naut Fortress (Sublevel 1)": get_locations_by_tags("xnaut_fortress_sublevel_1"),
+        "X-Naut Fortress (Sublevel 2)": get_locations_by_tags("xnaut_fortress_sublevel_2"),
+        "X-Naut Fortress (Sublevel 3)": get_locations_by_tags("xnaut_fortress_sublevel_3"),
         "Palace of Shadow": get_locations_by_tags("palace"),
         "Palace of Shadow (Post-Riddle Tower)": get_locations_by_tags("riddle_tower"),
         "Pit of 100 Trials": get_locations_by_tags("pit"),
@@ -47,44 +53,59 @@ def get_region_connections_dict(world: "TTYDWorld") -> dict[tuple[str, str], typ
     Returns a dictionary mapping region connections (source, target) to their access rules.
     If a rule is None, the connection is always available.
     """
+    glitches = world.options.glitches_required.value == GlitchesRequired.option_glitches
+
     connections = {
         ("Menu", "Rogueport"): None,
-        ("Menu", "Rogueport (Westside)"): None,
         ("Menu", "Tattlesanity"): None,
+        ("Rogueport", "Rogueport (Westside)"):
+            lambda state: world.options.open_westside or state.has("Contact Lens", world.player),
         ("Rogueport", "Rogueport Sewers"): None,
-        ("Rogueport", "Rogueport Sewers Westside"):
-            lambda state: StateLogic.sewer_westside(state, world.player),
+        ("Rogueport Sewers", "Rogueport Sewers Westside"):
+            lambda state: StateLogic.sewer_east_to_west(state, world.player),
+        ("Rogueport Sewers", "Rogueport Sewers Westside Ground"):
+            lambda state: StateLogic.sewer_east_to_west_ground(state, world.player) or glitches, # can be accessed with no items in glitched logic.
+        ("Rogueport (Westside)", "Rogueport Sewers Westside"):
+            lambda state: state.has("Paper Mode", world.player),
+        ("Rogueport Sewers Westside", "Rogueport Sewers Westside Ground"): None,
+        ("Rogueport Sewers Westside Ground", "Rogueport Sewers Westside"):
+            lambda state: StateLogic.sewer_west_ground_to_west(state, world.player),
+        ("Rogueport Sewers Westside Ground", "Rogueport (Westside)"): None,
         ("Rogueport Sewers Westside", "Twilight Town"):
             lambda state: state.has("Yoshi", world.player),
-        ("Rogueport", "Rogueport Sewers Westside Ground"):
-            lambda state: StateLogic.sewer_westside_ground(state, world.player),
         ("Rogueport Sewers Westside Ground", "Pit of 100 Trials"):
             lambda state: StateLogic.pit_westside_ground(state, world.player),
-        ("Rogueport Sewers Westside Ground", "Rogueport (Westside)"): None,
         ("Rogueport Sewers Westside Ground", "Twilight Town"):
-            lambda state: StateLogic.ultra_boots(state, world.player),
+            lambda state: StateLogic.ultra_boots(state, world.player) or (glitches and StateLogic.super_jump(state, world.player)),
         ("Rogueport Sewers", "Pit of 100 Trials"):
-            lambda state: StateLogic.pit(state, world.player),
+            lambda state: StateLogic.pit(state, world.player) or (glitches and StateLogic.pit_glitches(state, world.player)),
         ("Rogueport", "Shadow Queen"):
             lambda state, star_shuffle=world.options.star_shuffle.value: StateLogic.palace(state, world.player, world.options.goal_stars.value, star_shuffle),
         ("Rogueport", "Palace of Shadow"):
             lambda state, star_shuffle=world.options.star_shuffle.value: StateLogic.palace(state, world.player, world.options.palace_stars.value, star_shuffle),
         ("Palace of Shadow", "Palace of Shadow (Post-Riddle Tower)"):
-            lambda state: StateLogic.riddle_tower(state, world.player),
+            lambda state: StateLogic.riddle_tower(state, world.player, glitches),
         ("Palace of Shadow (Post-Riddle Tower)", "Shadow Queen"):
             lambda state: state.can_reach("Palace of Shadow Final Staircase: Ultra Shroom", "Location", world.player) and state.has("stars", world.player, world.options.goal_stars.value),
         ("Rogueport", "Fahr Outpost"):
             lambda state: StateLogic.fahr_outpost(state, world.player),
         ("Rogueport", "Keelhaul Key"):
-            lambda state: StateLogic.keelhaul_key(state, world.player),
-        ("Keelhaul Key", "Pirate's Grotto"):
-            lambda state: StateLogic.pirates_grotto(state, world.player),
-        ("Rogueport", "Rogueport (Westside)"):
-            lambda state: StateLogic.westside(state, world.player),
+            lambda state: StateLogic.keelhaul_key(state, world.player) or (glitches and StateLogic.keelhaul_key_glitches(state, world.player)),
+        ("Keelhaul Key", "Pirate's Grotto (Main)"):
+            lambda state: StateLogic.pirates_grotto_front_door(state, world.player) or (glitches and StateLogic.pirates_grotto_front_door_glitches(state, world.player)),
+        ("Keelhaul Key", "Pirate's Grotto (End)"):
+            lambda state: glitches and StateLogic.pirates_grotto_back_door_glitches(state, world.player),
+        ("Pirate's Grotto (Main)", "Pirate's Grotto (Ship)"):
+            lambda state: StateLogic.pirates_grotto_main_to_ship(state, world.player) or (glitches and StateLogic.pirates_grotto_main_to_ship_glitches(state, world.player)),
+        ("Pirate's Grotto (Main)", "Pirate's Grotto (End)"):
+            lambda state: StateLogic.pirates_grotto_main_to_end(state, world.player),
+        ("Pirate's Grotto (Ship)", "Pirate's Grotto (Main)"): None,
+        ("Pirate's Grotto (End)", "Pirate's Grotto (Ship)"):
+            lambda state: StateLogic.pirates_grotto_end_to_ship(state, world.player),
+        ("Pirate's Grotto (Ship)", "Pirate's Grotto (End)"):
+            lambda state: StateLogic.pirates_grotto_ship_to_end(state, world.player),
         ("Rogueport (Westside)", "Glitzville"):
-            lambda state: StateLogic.glitzville(state, world.player),
-        ("Rogueport (Westside)", "Rogueport Sewers Westside"):
-            lambda state: state.has("Paper Mode", world.player),
+            lambda state: StateLogic.glitzville(state, world.player) or (glitches and StateLogic.glitzville_glitches(state, world.player)),
         ("Rogueport (Westside)", "Excess Express"):
             lambda state: StateLogic.excess_express(state, world.player),
         ("Excess Express", "Riverside Station"):
@@ -92,7 +113,7 @@ def get_region_connections_dict(world: "TTYDWorld") -> dict[tuple[str, str], typ
         ("Riverside Station", "Poshley Heights"):
             lambda state: StateLogic.poshley_heights(state, world.player),
         ("Rogueport Sewers", "Petal Meadows (Left)"):
-            lambda state: StateLogic.petal_left(state, world.player),
+            lambda state: StateLogic.petal_left(state, world.player) or (glitches and StateLogic.petal_left_glitches(state, world.player)),
         ("Rogueport Sewers", "Boggly Woods"):
             lambda state: StateLogic.boggly_woods(state, world.player),
         ("Twilight Town", "Twilight Trail"):
@@ -100,19 +121,33 @@ def get_region_connections_dict(world: "TTYDWorld") -> dict[tuple[str, str], typ
         ("Twilight Trail", "Creepy Steeple"):
             lambda state: StateLogic.steeple(state, world.player),
         ("Petal Meadows (Left)", "Petal Meadows (Right)"): None,
+        ("Petal Meadows (Right)", "Petal Meadows (Left)"):
+            lambda state: glitches and StateLogic.petal_left_glitches(state, world.player),
         ("Petal Meadows (Left)", "Hooktail's Castle"):
             lambda state: StateLogic.hooktails_castle(state, world.player),
         ("Boggly Woods", "Great Tree"):
             lambda state: StateLogic.great_tree(state, world.player),
-        ("Fahr Outpost", "X-Naut Fortress"):
-            lambda state: StateLogic.moon(state, world.player)
+        ("Fahr Outpost", "X-Naut Fortress (Level 1)"):
+            lambda state: StateLogic.moon(state, world.player),
+        ("X-Naut Fortress (Level 1)", "X-Naut Fortress (Sublevel 1)"):
+            lambda state: state.has("Elevator Key 1", world.player),
+        ("X-Naut Fortress (Level 1)", "X-Naut Fortress (Sublevel 2)"):
+            lambda state: state.has("Elevator Key 1", world.player),
+        ("X-Naut Fortress (Sublevel 2)", "X-Naut Fortress (Level 1)"):
+            lambda state: state.has("Elevator Key 2", world.player), # can't unlock elevator 1 from the bottom. However, unlocking elevator 2 also unlocks elevator 1 because of sequence
+        ("X-Naut Fortress (Sublevel 2)", "X-Naut Fortress (Sublevel 1)"):
+            lambda state: state.has("Elevator Key 2", world.player),
+        ("X-Naut Fortress (Sublevel 2)", "X-Naut Fortress (Sublevel 3)"):
+            lambda state: state.has("Elevator Key 2", world.player),
+        ("Rogueport Sewers Westside", "X-Naut Fortress (Sublevel 2)"):
+            lambda state: StateLogic.teleporter_room_early(state, world.player),
     }
 
     if world.options.blue_pipe_toggle:
-        connections[("Rogueport Sewers", "Petal Meadows (Right)")] = lambda state: StateLogic.super_blue_pipes(state, world.player)
-        connections[("Rogueport Sewers", "Boggly Woods")] = lambda state: StateLogic.super_blue_pipes(state, world.player)
-        connections[("Rogueport Sewers", "Keelhaul Key")] = lambda state: StateLogic.ultra_blue_pipes(state, world.player)
-        connections[("Rogueport Sewers", "Poshley Heights")] = lambda state: StateLogic.ultra_blue_pipes(state, world.player)
+        connections[("Rogueport Sewers", "Petal Meadows (Right)")] = lambda state: StateLogic.super_boots(state, world.player) and (glitches or StateLogic.super_hammer(state, world.player))
+        connections[("Rogueport Sewers", "Boggly Woods")] = lambda state: StateLogic.super_boots(state, world.player) and (glitches or StateLogic.super_hammer(state, world.player))
+        connections[("Rogueport Sewers", "Keelhaul Key")] = lambda state: StateLogic.super_boots(state, world.player) and (glitches or StateLogic.ultra_hammer(state, world.player))
+        connections[("Rogueport Sewers", "Poshley Heights")] = lambda state: StateLogic.super_boots(state, world.player) and (glitches or StateLogic.ultra_hammer(state, world.player))
 
     return connections
 

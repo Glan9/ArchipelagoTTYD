@@ -4302,7 +4302,7 @@
     ],
     "vanilla_item": 77772159,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5"
     ]
   },
@@ -4315,7 +4315,7 @@
     ],
     "vanilla_item": 77772071,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_ship",
       "chapter_5"
     ]
   },
@@ -4328,7 +4328,7 @@
     ],
     "vanilla_item": 77772162,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5",
       "shine"
     ]
@@ -4342,7 +4342,7 @@
     ],
     "vanilla_item": 77772177,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5",
       "star_piece"
     ]
@@ -4356,7 +4356,7 @@
     ],
     "vanilla_item": 77772177,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5",
       "panel"
     ]
@@ -4370,7 +4370,7 @@
     ],
     "vanilla_item": 77772080,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5"
     ]
   },
@@ -4383,7 +4383,7 @@
     ],
     "vanilla_item": 77772162,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5",
       "shine"
     ]
@@ -4397,7 +4397,7 @@
     ],
     "vanilla_item": 77772177,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5",
       "star_piece"
     ]
@@ -4411,7 +4411,7 @@
     ],
     "vanilla_item": 77772000,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5"
     ]
   },
@@ -4424,7 +4424,7 @@
     ],
     "vanilla_item": 77772043,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5"
     ]
   },
@@ -4437,7 +4437,7 @@
     ],
     "vanilla_item": 77772162,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5",
       "shine"
     ]
@@ -4451,7 +4451,7 @@
     ],
     "vanilla_item": 77772177,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5",
       "panel"
     ]
@@ -4466,7 +4466,7 @@
     ],
     "vanilla_item": 77772011,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5"
     ]
   },
@@ -4479,7 +4479,7 @@
     ],
     "vanilla_item": 77772015,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5"
     ]
   },
@@ -4492,7 +4492,7 @@
     ],
     "vanilla_item": 77772126,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5"
     ]
   },
@@ -4505,7 +4505,7 @@
     ],
     "vanilla_item": 77772000,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5"
     ]
   },
@@ -4518,7 +4518,7 @@
     ],
     "vanilla_item": 77772162,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5",
       "shine"
     ]
@@ -4532,7 +4532,7 @@
     ],
     "vanilla_item": 77772162,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_main",
       "chapter_5",
       "shine"
     ]
@@ -4546,7 +4546,7 @@
     ],
     "vanilla_item": 77772160,
     "tags": [
-      "pirates_grotto",
+      "pirates_grotto_end",
       "star"
     ]
   },
@@ -5470,7 +5470,7 @@
     ],
     "vanilla_item": 77772182,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_level_1",
       "chapter_7"
     ]
   },
@@ -5483,7 +5483,7 @@
     ],
     "vanilla_item": 77772209,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_level_1",
       "chapter_7"
     ]
   },
@@ -5496,7 +5496,7 @@
     ],
     "vanilla_item": 77772144,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_level_1",
       "chapter_7"
     ]
   },
@@ -5509,7 +5509,7 @@
     ],
     "vanilla_item": 77772177,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_level_1",
       "chapter_7",
       "star_piece"
     ]
@@ -5523,7 +5523,7 @@
     ],
     "vanilla_item": 77772159,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_level_1",
       "chapter_7"
     ]
   },
@@ -5536,7 +5536,7 @@
     ],
     "vanilla_item": 77772038,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_level_1",
       "chapter_7"
     ]
   },
@@ -5549,7 +5549,7 @@
     ],
     "vanilla_item": 77772053,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_level_1",
       "chapter_7"
     ]
   },
@@ -5562,7 +5562,7 @@
     ],
     "vanilla_item": 77772191,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_level_1",
       "chapter_7"
     ]
   },
@@ -5575,7 +5575,7 @@
     ],
     "vanilla_item": 77772000,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_1",
       "chapter_7"
     ]
   },
@@ -5588,7 +5588,7 @@
     ],
     "vanilla_item": 77772000,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_1",
       "chapter_7"
     ]
   },
@@ -5601,7 +5601,7 @@
     ],
     "vanilla_item": 77772000,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_1",
       "chapter_7"
     ]
   },
@@ -5614,7 +5614,7 @@
     ],
     "vanilla_item": 77772000,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_1",
       "chapter_7"
     ]
   },
@@ -5627,7 +5627,7 @@
     ],
     "vanilla_item": 77772000,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_1",
       "chapter_7"
     ]
   },
@@ -5640,7 +5640,7 @@
     ],
     "vanilla_item": 77772000,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_1",
       "chapter_7"
     ]
   },
@@ -5653,7 +5653,7 @@
     ],
     "vanilla_item": 77772056,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_1",
       "chapter_7"
     ]
   },
@@ -5666,7 +5666,7 @@
     ],
     "vanilla_item": 77772057,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_1",
       "chapter_7"
     ]
   },
@@ -5679,7 +5679,7 @@
     ],
     "vanilla_item": 77772177,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_1",
       "chapter_7",
       "star_piece"
     ]
@@ -5694,7 +5694,7 @@
     ],
     "vanilla_item": 77772054,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_1",
       "chapter_7"
     ]
   },
@@ -5707,7 +5707,7 @@
     ],
     "vanilla_item": 77772021,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_2",
       "chapter_7"
     ]
   },
@@ -5720,7 +5720,7 @@
     ],
     "vanilla_item": 77772169,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_2",
       "chapter_7"
     ]
   },
@@ -5733,7 +5733,7 @@
     ],
     "vanilla_item": 77772034,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_2",
       "chapter_7"
     ]
   },
@@ -5746,7 +5746,7 @@
     ],
     "vanilla_item": 77772177,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_2",
       "chapter_7",
       "star_piece"
     ]
@@ -5760,7 +5760,7 @@
     ],
     "vanilla_item": 77772022,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_2",
       "chapter_7"
     ]
   },
@@ -5773,7 +5773,7 @@
     ],
     "vanilla_item": 77772023,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_3",
       "chapter_7"
     ]
   },
@@ -5786,7 +5786,7 @@
     ],
     "vanilla_item": 77772092,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_3",
       "chapter_7"
     ]
   },
@@ -5799,7 +5799,7 @@
     ],
     "vanilla_item": 77772024,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_3",
       "chapter_7"
     ]
   },
@@ -5812,7 +5812,7 @@
     ],
     "vanilla_item": 77772204,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_3",
       "chapter_7"
     ]
   },
@@ -5825,7 +5825,7 @@
     ],
     "vanilla_item": 77772039,
     "tags": [
-      "xnaut_fortress",
+      "xnaut_fortress_sublevel_3",
       "chapter_7",
       "star"
     ]

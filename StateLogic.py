@@ -29,6 +29,9 @@ def tube_curse(state, player):
 def petal_left(state, player):
     return state.has("Plane Mode", player)
 
+def petal_left_glitches(state, player):
+    return extended_yoshi_hover(state, player)
+
 
 def hooktails_castle(state, player):
     return state.has("Sun Stone", player) and state.has("Moon Stone", player) and (state.has("Koops", player) or state.has("Bobbery", player))
@@ -44,6 +47,11 @@ def great_tree(state, player):
 
 def glitzville(state, player):
     return state.has("Blimp Ticket", player)
+
+
+def glitzville_glitches(state, player):
+    return yoshi_teleport_horizontal(state, player)
+
 
 def twilight_town(state, player):
     return (
@@ -63,9 +71,47 @@ def steeple(state, player):
 def keelhaul_key(state, player):
     return state.has("Yoshi", player) and tube_curse(state, player) and state.has("Old Letter", player)
 
+def keelhaul_key_glitches(state, player):
+    return yoshi_teleport_vertical(state, player) and state.has("Old Letter", player) # Ultra boots are sufficient to use blue pipe, but if blue pipes are disabled...
 
-def pirates_grotto(state, player):
+
+def pirates_grotto_front_door(state, player):
     return state.has("Yoshi", player) and state.has("Bobbery", player) and state.has("Skull Gem", player) and super_boots(state, player)
+
+
+def pirates_grotto_front_door_glitches(state, player):
+    return (
+        (state.has("Yoshi", player) or super_jump(state, player)) # Normal way or superjump in putrid piranhas room
+        and state.has("Bobbery", player)
+        and (
+            (state.has("Skull Gem", player) and super_boots(state, player)) # Normal way or Pirate's Grotto Early using Goombella Buffer + seamwalk
+            or state.has("Goombella", player)
+        )
+    )
+
+
+def pirates_grotto_back_door_glitches(state, player):
+    return state.has("Ms. Mowz", player) and state.has("Yoshi", player)
+
+
+def pirates_grotto_main_to_ship(state, player):
+    return state.has("Bobbery", player) and state.has("Boat Mode", player)
+
+
+def pirates_grotto_main_to_ship_glitches(state, player):
+    return tube_curse(state, player)
+
+
+def pirates_grotto_main_to_end(state, player):
+    return state.has("Gate Handle", player) and state.has("Bobbery", player) and state.has("Boat Mode", player)
+
+
+def pirates_grotto_end_to_ship(state, player):
+    return state.has("Boat Mode", player)
+
+
+def pirates_grotto_ship_to_end(state, player):
+    return state.has("Boat Mode", player)
 
 
 def excess_express(state, player):
@@ -73,11 +119,11 @@ def excess_express(state, player):
 
 
 def riverside(state, player):
-    return state.has("Vivian", player) and state.has("Autograph", player) and state.has("Ragged Diary", player) and state.has("Blanket", player) and state.has("Vital Paper", player) and state.has("Train Ticket", player)
+    return state.has("Vivian", player) and state.has("Autograph", player) and state.has("Ragged Diary", player) and state.has("Blanket", player) and state.has("Vital Paper", player)
 
 
 def poshley_heights(state, player):
-    return state.has("Station Key 1", player) and state.has("Elevator Key (Station)", player) and super_hammer(state, player) and ultra_boots(state, player)
+    return state.has("Station Key 1", player) and state.has("Elevator Key (Station)", player) and ultra_boots(state, player)
 
 
 def fahr_outpost(state, player):
@@ -98,20 +144,51 @@ def pit(state, player):
     return state.has("Paper Mode", player) and state.has("Plane Mode", player)
 
 
+def pit_glitches(state, player):
+    return super_jump(state, player)
+
+
 def pit_westside_ground(state, player):
-    return state.has("Flurrie", player) and ((state.has("Contact Lens", player) and state.has("Paper Mode", player)) or state.has("Bobbery", player) or tube_curse(state, player) or ultra_hammer(state, player))
+    return state.has("Flurrie", player)
+# TODO: Investigate weird Koops jump thing to boat panel in this room?
 
 
 def palace(state, player, chapters: int, star_shuffle: int):
     return ttyd(state, player) and (state.has("stars", player, chapters) if star_shuffle == StarShuffle.option_all else state.has("required_stars", player, chapters))
 
 
-def riddle_tower(state, player):
-    return tube_curse(state, player) and state.has("Palace Key", player) and state.has("Bobbery", player) and state.has("Boat Mode", player) and state.has("Star Key", player) and state.has("Palace Key (Tower)", player, 8)
+def palace_firebar_room(state, player):
+    return tube_curse(state, player) or state.has("Vivian", player)
+
+
+def palace_firebar_room_glitches(state, player):
+    return state.has("Koops", player) or state.has("Yoshi", player)
+
+
+def riddle_tower(state, player, glitches=False):
+    return (
+        palace_firebar_room(state, player) or (glitches and palace_firebar_room_glitches(state, player))
+    ) and state.has("Palace Key", player) and state.has("Bobbery", player) and state.has("Boat Mode", player) and state.has("Star Key", player) and state.has("Palace Key (Tower)", player, 8)
+
+
+def sewer_east_to_west(state, player):
+    return tube_curse(state, player) or state.has("Bobbery", player)
+
+
+def sewer_east_to_west_ground(state, player):
+    return ultra_hammer(state, player)
+
+
+def sewer_west_ground_to_west(state, player):
+    return ultra_boots(state, player) or state.has("Paper Mode", player)
 
 
 def sewer_westside(state, player):
     return tube_curse(state, player) or state.has("Bobbery", player) or (state.has("Paper Mode", player) and state.has("Contact Lens", player)) or (ultra_hammer(state, player) and (state.has("Paper Mode", player) or (ultra_boots(state, player) and state.has("Yoshi", player))))
+
+
+def sewer_westside_glitches(state, player):
+    return state.has("Paper Mode", player)
 
 
 def sewer_westside_ground(state, player):
@@ -128,3 +205,32 @@ def super_blue_pipes(state, player):
 
 def ultra_blue_pipes(state, player):
     return ultra_hammer(state, player) and super_boots(state, player)
+
+
+# Used for glitched logic. Superjump logic will only consider using Koops with either the teleporter door or Bobbery's door.
+# This is because it's impossible to be sure that the player will always be able to get jump storage with Yoshi at any given point.
+def super_jump(state, player):
+    return state.has("Koops", player) and (
+        # TRE
+        state.has("Paper Mode", player)
+        or
+        # Yoshi teleport into Bobbery's house
+        # If you can tube mode in, then you can already do TRE
+        yoshi_teleport_vertical(state, player)
+    )
+
+def text_storage(state, player):
+    return state.has("Goombella", player) and ultra_boots(state, player)
+
+def yoshi_teleport_vertical(state, player):
+    return state.has("Yoshi", player) and text_storage(state, player)
+
+def yoshi_teleport_horizontal(state, player):
+    return state.has("Ms. Mowz", player) and yoshi_teleport_vertical(state, player)
+
+def extended_yoshi_hover(state, player):
+    return yoshi_teleport_vertical(state, player) # same requirements... but just for better readability
+
+def teleporter_room_early(state, player):
+    return state.has("Paper Mode", player) or yoshi_teleport_horizontal(state, player)
+

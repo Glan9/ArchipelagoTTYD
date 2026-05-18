@@ -97,6 +97,17 @@ class PitItems(Choice):
     default = 1
 
 
+class GlitchesRequired(Choice):
+    """
+    Whether the logic expects the use of glitches in order to reach items.
+    """
+    display_name = "Glitches Required"
+    option_glitchless = 1
+    option_glitches = 2
+    option_stupids = 3
+    default = 1
+
+
 class TattleSanityOption(Toggle):
     """
     Creates a location for every enemy being tattled.
@@ -525,6 +536,7 @@ class TTYDOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     goal: Goal
     goal_stars: GoalStars
+    glitches_required: GlitchesRequired
     palace_stars: PalaceStars
     required_stars_toggle: RequiredStarsToggle
     required_stars: RequiredStars
