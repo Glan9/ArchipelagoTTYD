@@ -18,15 +18,21 @@ _Italics_ indicate possibilities that I added.
 - Rafters room in Hooktail Castle seemed to require plane mode to reach the Star Piece. This is not true and this was corrected.
 - The spike wall room in Pirate's Grotto can be cleared with Tube Mode _or Vivian_.
 - `Palace of Shadow Far Backroom 1: Life Shroom` now requires 3 Palace Keys instead of only 2. This is because it could technically be possible to softlock if you perform Wooden Wheel Skip.
+- Corrected some other logic for the far hallways and backrooms.
 
 ## Required Tricks for Glitch Logic
 - Superjumps: only expected using Koops with either Bobbery's house door or teleporter room door, however it can be expected to deathwarp with jump storage to carry it into other locations which have save blocks.
 - Text Storage/Time Stop using Goombella and Ultra Boots
 - Yoshi Teleports (mostly vertical and a couple horizontal)
+- Extended Yoshi Hovers (no more than 1 extension)
+- Hitting block while falling riding Yoshi
 - Fish Glitch
 - Hazard Respawn Glitch
 - Teleporter Room Early
+- Shine Sprite in Rogueport backyard with Bobbery
+- Lock Jump
 - HP Plus under the bridge at Hooktail Castle using Plane Mode
+- Window Jump
 - Grabbing the Life Shroom in Hooktail Castle by using Koops or Yoshi from the moving block
 - Rafters Star Piece in Hooktail Castle with Ultra Boots
 - Using Yoshi to hover from the raised block to the end platform in the rafters room
@@ -36,7 +42,10 @@ _Italics_ indicate possibilities that I added.
 - Skipping the 100-Jabbi Fight with Jabbi Hive Skip (while only controlling 11 Punis)
 - Cage Skip
 - Bookcase Jump
+- Ice Power with Yoshi
 - Gate Handle Early
 - Grotto Back Entrance (with Fish Glitch, **not** superjumps as this is too annoying and unreliable on US)
+- Sanctum Pole Skip
+- Conveyor Belt Skip
 - Clearing the Palace of Shadow firebar room using i-frames with either Koops or Yoshi
 - Wooden Wheel Skip

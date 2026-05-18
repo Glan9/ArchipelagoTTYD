@@ -138,9 +138,9 @@ def get_region_connections_dict(world: "TTYDWorld") -> dict[tuple[str, str], typ
         ("X-Naut Fortress (Sublevel 2)", "X-Naut Fortress (Sublevel 1)"):
             lambda state: state.has("Elevator Key 2", world.player),
         ("X-Naut Fortress (Sublevel 2)", "X-Naut Fortress (Sublevel 3)"):
-            lambda state: state.has("Elevator Key 2", world.player),
+            lambda state: state.has("Elevator Key 2", world.player) or (glitches and StateLogic.yoshi_teleport_vertical(state, world.player)),
         ("Rogueport Sewers Westside", "X-Naut Fortress (Sublevel 2)"):
-            lambda state: StateLogic.teleporter_room_early(state, world.player),
+            lambda state: glitches and StateLogic.teleporter_room_early(state, world.player),
     }
 
     if world.options.blue_pipe_toggle:

@@ -14,6 +14,9 @@ if typing.TYPE_CHECKING:
 
 
 def set_rules(world: "TTYDWorld"):
+    glitchless_rules = create_lambda_from_json(pkgutil.get_data(__name__, "json/rules.json").decode(), world)
+    #glitched_rules = create_lambda_from_json(pkgutil.get_data(__name__, "json/rules_glitches.json").decode(), world)
+
     for location, rule in create_lambda_from_json(pkgutil.get_data(__name__, "json/rules.json").decode(), world).items():
         if location not in world.disabled_locations:
             add_rule(world.multiworld.get_location(location, world.player), rule)

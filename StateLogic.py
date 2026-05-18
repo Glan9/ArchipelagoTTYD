@@ -95,7 +95,7 @@ def pirates_grotto_back_door_glitches(state, player):
 
 
 def pirates_grotto_main_to_ship(state, player):
-    return state.has("Bobbery", player) and state.has("Boat Mode", player)
+    return state.has("Yoshi", player) and state.has("Bobbery", player) and state.has("Boat Mode", player)
 
 
 def pirates_grotto_main_to_ship_glitches(state, player):
@@ -103,7 +103,7 @@ def pirates_grotto_main_to_ship_glitches(state, player):
 
 
 def pirates_grotto_main_to_end(state, player):
-    return state.has("Gate Handle", player) and state.has("Bobbery", player) and state.has("Boat Mode", player)
+    return state.has("Gate Handle", player) and state.has("Yoshi", player) and state.has("Bobbery", player) and state.has("Boat Mode", player)
 
 
 def pirates_grotto_end_to_ship(state, player):
@@ -164,6 +164,28 @@ def palace_firebar_room(state, player):
 def palace_firebar_room_glitches(state, player):
     return state.has("Koops", player) or state.has("Yoshi", player)
 
+def palace_far_backroom_1(state, player):
+    return state.has("Yoshi", player) and state.has("Flurrie", player) and (state.has("Koops", player) or state.has("Bobbery", player))
+
+def palace_far_backroom_2(state, player):
+    return palace_far_backroom_1(state, player) and ultra_boots(state, player) and state.has("Bobbery", player)
+
+def palace_far_backroom_3(state, player):
+    return palace_far_backroom_2(state, player) and state.has("Palace Key", player, 3) and state.has("Paper Mode", player) and ultra_hammer(state, player)
+
+def palace_far_backroom_1_glitches(state, player):
+    return palace_far_backroom_1(state, player) or (extended_yoshi_hover(state, player) and (state.has("Koops", player) or state.has("Bobbery", player)))
+
+def palace_far_backroom_2_glitches(state, player):
+    return palace_far_backroom_2(state, player) or (palace_far_backroom_1_glitches(state, player) and ultra_boots(state, player) and (extended_yoshi_hover(state, player) or state.has("Bobbery", player)))
+
+def palace_far_backroom_3_glitches(state, player):
+    return (
+        (palace_far_backroom_2_glitches(state, player) and state.has("Paper Mode", player) and state.has("Flurrie", player) and ultra_hammer(state, player))
+        or
+        (palace_far_backroom_1_glitches(state, player) and extended_yoshi_hover(state, player))
+    )
+
 
 def riddle_tower(state, player, glitches=False):
     return (
@@ -207,7 +229,17 @@ def ultra_blue_pipes(state, player):
     return ultra_hammer(state, player) and super_boots(state, player)
 
 
-# Used for glitched logic. Superjump logic will only consider using Koops with either the teleporter door or Bobbery's door.
+def hooktail_castle_staircase(state, player):
+    return (state.has("Yoshi", player) or state.has("Plane Mode", player)) and state.has("Castle Key", player, 1)
+
+def hit_distant_object(state, player):
+    return state.has("Koops", player) or state.has("Bobbery", player)
+
+
+# GLITCH LOGIC SPECIFIC FUNCTIONS BELOW
+
+
+# Superjump logic will only consider using Koops with either the teleporter door or Bobbery's door.
 # This is because it's impossible to be sure that the player will always be able to get jump storage with Yoshi at any given point.
 def super_jump(state, player):
     return state.has("Koops", player) and (
@@ -234,3 +266,16 @@ def extended_yoshi_hover(state, player):
 def teleporter_room_early(state, player):
     return state.has("Paper Mode", player) or yoshi_teleport_horizontal(state, player)
 
+# Can beat them with 91 punies or can pass with JHS with only 11 punies
+def hundred_jabbi_fight(state, player):
+    return state.has("Puni Orb", player) and (
+        (state.has("Blue Key", player) and state.has("Flurrie", player))
+        or 
+        (state.has("Goombella", player) and state.has("Paper Mode", player) and state.has("Red Key", player))
+    )
+
+def cage_skip(state, player):
+    return state.has("Paper Mode", player) or super_boots(state, player)
+
+def hooktail_castle_staircase_superjump(state, player):
+    return can_super_jump(state, player) and tube_curse(state, player) and state.has("Bobbery", player)
