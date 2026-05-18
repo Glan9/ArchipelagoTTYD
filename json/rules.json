@@ -1045,7 +1045,7 @@
       },
       {
         "or": [
-          {"function": "hit_distant_objects"},
+          {"function": "hit_distant_object"},
           {"has": "Paper Mode"}
         ]
       },
@@ -1093,7 +1093,7 @@
       },
       {
         "or": [
-          {"function": "hit_distant_objects"},
+          {"function": "hit_distant_object"},
           {"has": "Paper Mode"}
         ]
       },

@@ -53,7 +53,7 @@ def get_region_connections_dict(world: "TTYDWorld") -> dict[tuple[str, str], typ
     Returns a dictionary mapping region connections (source, target) to their access rules.
     If a rule is None, the connection is always available.
     """
-    glitches = world.options.glitches_required.value == GlitchesRequired.option_glitches
+    glitches = world.options.glitches_required.value in [GlitchesRequired.option_glitches, GlitchesRequired.option_stupids]
 
     connections = {
         ("Menu", "Rogueport"): None,

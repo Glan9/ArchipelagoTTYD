@@ -7,7 +7,7 @@ from . import StateLogic, location_table, EnemyRandomizer
 from .Options import Goal, PitItems
 from .Data import stars, pit_exclusive_tattle_stars_required, location_to_unit
 from .Locations import get_location_ids, get_locations_by_tags, location_id_to_name
-from .Options import PalaceSkip
+from .Options import PalaceSkip, GlitchesRequired
 
 if typing.TYPE_CHECKING:
     from . import TTYDWorld
@@ -15,11 +15,19 @@ if typing.TYPE_CHECKING:
 
 def set_rules(world: "TTYDWorld"):
     glitchless_rules = create_lambda_from_json(pkgutil.get_data(__name__, "json/rules.json").decode(), world)
-    #glitched_rules = create_lambda_from_json(pkgutil.get_data(__name__, "json/rules_glitches.json").decode(), world)
+    glitched_rules = create_lambda_from_json(pkgutil.get_data(__name__, "json/rules_glitches.json").decode(), world)
 
-    for location, rule in create_lambda_from_json(pkgutil.get_data(__name__, "json/rules.json").decode(), world).items():
+    for location, rule in glitchless_rules.items():
         if location not in world.disabled_locations:
-            add_rule(world.multiworld.get_location(location, world.player), rule)
+            # If we're using glitched logic and a glitched logic rule exists for the location, then
+            # the new rule is (glitchless rule OR glitched rule).
+            # Otherwise just add the glitchless rule.
+            if location in glitched_rules and world.options.glitches_required.value in [GlitchesRequired.option_glitches, GlitchesRequired.option_stupids]:
+                glitched_rule = glitched_rules[location]
+                combined_rule = lambda state: rule(state) or glitched_rule(state)
+                add_rule(world.multiworld.get_location(location, world.player), combined_rule)
+            else:
+                add_rule(world.multiworld.get_location(location, world.player), rule)
 
     for location in ["Palace of Shadow Final Staircase: Ultra Shroom", "Palace of Shadow Final Staircase: Jammin' Jelly"]:
         if location not in world.disabled_locations:
