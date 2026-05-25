@@ -14,8 +14,8 @@ if typing.TYPE_CHECKING:
 
 
 def set_rules(world: "TTYDWorld"):
-    glitchless_rules = create_lambda_from_json(pkgutil.get_data(__name__, "json/rules.json").decode(), world)
-    glitched_rules = create_lambda_from_json(pkgutil.get_data(__name__, "json/rules_glitches.json").decode(), world)
+    glitchless_rules = create_expression_from_json(pkgutil.get_data(__name__, "json/rules.json").decode(), world)
+    glitched_rules = create_expression_from_json(pkgutil.get_data(__name__, "json/rules_glitches.json").decode(), world)
 
     for location, rule in glitchless_rules.items():
         if location not in world.disabled_locations:
@@ -24,10 +24,11 @@ def set_rules(world: "TTYDWorld"):
             # Otherwise just add the glitchless rule.
             if location in glitched_rules and world.options.glitches_required.value in [GlitchesRequired.option_glitches, GlitchesRequired.option_stupids]:
                 glitched_rule = glitched_rules[location]
-                combined_rule = lambda state: rule(state) or glitched_rule(state)
-                add_rule(world.multiworld.get_location(location, world.player), combined_rule)
+                evaluated_rule = eval(f"lambda state: ({rule}) or ({glitched_rule})", {"world": world, "StateLogic": StateLogic})
+                add_rule(world.multiworld.get_location(location, world.player), evaluated_rule)
             else:
-                add_rule(world.multiworld.get_location(location, world.player), rule)
+                evaluated_rule = eval(f"lambda state: {rule}", {"world": world, "StateLogic": StateLogic})
+                add_rule(world.multiworld.get_location(location, world.player), evaluated_rule)
 
     for location in ["Palace of Shadow Final Staircase: Ultra Shroom", "Palace of Shadow Final Staircase: Jammin' Jelly"]:
         if location not in world.disabled_locations:
@@ -82,14 +83,14 @@ def set_tattle_rules(world: "TTYDWorld"):
         add_rule(world.get_location(location_name), extra_condition)
 
 
-def create_lambda_from_json(json_string: str, world: "TTYDWorld") -> typing.Dict[str, typing.Callable]:
+def create_expression_from_json(json_string: str, world: "TTYDWorld") -> typing.Dict[str, typing.Callable]:
     lambda_functions = {}
     for location, requirements in json.loads(json_string).items():
-        lambda_functions[location] = _build_single_lambda(requirements, world)
+        lambda_functions[location] = _build_single_expression(requirements, world)
     return lambda_functions
 
 
-def _build_single_lambda(req: typing.Dict, world: "TTYDWorld") -> typing.Callable:
+def _build_single_expression(req: typing.Dict, world: "TTYDWorld") -> typing.Callable:
     def build_expression(r):
         if "or" in r:
             conditions = [build_expression(condition) for condition in r["or"]]
@@ -148,8 +149,9 @@ def _build_single_lambda(req: typing.Dict, world: "TTYDWorld") -> typing.Callabl
             return "False"
 
     expression = build_expression(req)
+    return expression
     # Capture world and StateLogic in the lambda's closure
-    return eval(f"lambda state: {expression}", {"world": world, "StateLogic": StateLogic})
+    #return eval(f"lambda state: {expression}", {"world": world, "StateLogic": StateLogic})
 
 
 def get_tattle_rules_dict() -> dict[str, typing.List[int]]:

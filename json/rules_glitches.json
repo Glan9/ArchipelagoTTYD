@@ -10,7 +10,8 @@
       {"function": "ttyd"},
       {"function": "super_jump"}
     ]
-  },  "Rogueport Docks: HP Drain": {
+  },
+  "Rogueport Docks: HP Drain": {
     "function": "super_jump"
   },
   "Rogueport Docks: Star Piece 2": {
@@ -522,54 +523,31 @@
 
 
   "X-Naut Fortress Crane Room: Coin 1": {
-    "function": "super_jump"
+    "function": "ultra_boots"
   },
   "X-Naut Fortress Crane Room: Coin 2": {
-    "function": "super_jump"
+    "function": "ultra_boots"
   },
   "X-Naut Fortress Crane Room: Coin 3": {
-    "function": "super_jump"
+    "function": "ultra_boots"
   },
   "X-Naut Fortress Crane Room: Coin 4": {
-    "function": "super_jump"
+    "function": "ultra_boots"
   },
   "X-Naut Fortress Crane Room: Coin 5": {
-    "function": "super_jump"
+    "function": "ultra_boots"
   },
   "X-Naut Fortress Crane Room: Coin 6": {
-    "function": "super_jump"
+    "function": "ultra_boots"
   },
   "X-Naut Fortress Crane Room: Feeling Fine": {
-    "function": "super_jump"
+    "function": "ultra_boots"
   },
   "X-Naut Fortress Crane Room: Feeling Fine P": {
-    "function": "super_jump"
+    "function": "ultra_boots"
   },
   "X-Naut Fortress Crane Room: Star Piece": {
-    "function": "super_jump"
-  },
-  "X-Naut Fortress Teleporter Room: Cog": {
-    "and": [
-      {
-        "has": "Elevator Key 1"
-      },
-      {
-        "function": "ultra_boots"
-      },
-      {
-        "has": "Paper Mode"
-      },
-      {
-        "or": [
-          {
-            "has": "Koops"
-          },
-          {
-            "has": "Yoshi"
-          }
-        ]
-      }
-    ]
+    "function": "ultra_boots"
   },
   "X-Naut Fortress Factory: Ultra Shroom": {
     "and": [
@@ -725,127 +703,5 @@
       {"function": "palace_far_backroom_3_glitches"},
       {"has": "Plane Mode"}
     ]
-  },
-
-
-  "Pit of 100 Trials Floor 10: Sleepy Stomp": {
-    "function": {
-      "name": "chapter_completions",
-      "count": 1
-    }
-  },
-  "Pit of 100 Trials Floor 20: Fire Drive": {
-    "function": {
-      "name": "chapter_completions",
-      "count": 1
-    }
-  },
-  "Pit of 100 Trials Floor 30: Zap Tap": {
-    "function": {
-      "name": "chapter_completions",
-      "count": 2
-    }
-  },
-  "Pit of 100 Trials Floor 40: Pity Flower": {
-    "function": {
-      "name": "chapter_completions",
-      "count": 2
-    }
-  },
-  "Pit of 100 Trials Floor 50: Strange Sack": {
-    "function": {
-      "name": "chapter_completions",
-      "count": 3
-    }
-  },
-  "Pit of 100 Trials Floor 60: Double Dip": {
-    "function": {
-      "name": "chapter_completions",
-      "count": 3
-    }
-  },
-  "Pit of 100 Trials Floor 70: Double Dip P": {
-    "function": {
-      "name": "chapter_completions",
-      "count": 4
-    }
-  },
-  "Pit of 100 Trials Floor 80: Bump Attack": {
-    "function": {
-      "name": "chapter_completions",
-      "count": 4
-    }
-  },
-  "Pit of 100 Trials Floor 90: Lucky Day": {
-    "function": {
-      "name": "chapter_completions",
-      "count": 5
-    }
-  },
-  "Pit of 100 Trials Floor 100: Return Postage": {
-    "function": {
-      "name": "chapter_completions",
-      "count": 5
-    }
-  },
-  "Rogueport Sewers Town: Dazzle Item 1": {
-    "has": "Star Piece",
-    "count": 1
-  },
-  "Rogueport Sewers Town: Dazzle Item 2": {
-    "has": "Star Piece",
-    "count": 3
-  },
-  "Rogueport Sewers Town: Dazzle Item 3": {
-    "has": "Star Piece",
-    "count": 6
-  },
-  "Rogueport Sewers Town: Dazzle Item 4": {
-    "has": "Star Piece",
-    "count": 10
-  },
-  "Rogueport Sewers Town: Dazzle Item 5": {
-    "has": "Star Piece",
-    "count": 14
-  },
-  "Rogueport Sewers Town: Dazzle Item 6": {
-    "has": "Star Piece",
-    "count": 18
-  },
-  "Rogueport Sewers Town: Dazzle Item 7": {
-    "has": "Star Piece",
-    "count": 23
-  },
-  "Rogueport Sewers Town: Dazzle Item 8": {
-    "has": "Star Piece",
-    "count": 29
-  },
-  "Rogueport Sewers Town: Dazzle Item 9": {
-    "has": "Star Piece",
-    "count": 35
-  },
-  "Rogueport Sewers Town: Dazzle Item 10": {
-    "has": "Star Piece",
-    "count": 42
-  },
-  "Rogueport Sewers Town: Dazzle Item 11": {
-    "has": "Star Piece",
-    "count": 50
-  },
-  "Rogueport Sewers Town: Dazzle Item 12": {
-    "has": "Star Piece",
-    "count": 60
-  },
-  "Rogueport Sewers Town: Dazzle Item 13": {
-    "has": "Star Piece",
-    "count": 70
-  },
-  "Rogueport Sewers Town: Dazzle Item 14": {
-    "has": "Star Piece",
-    "count": 85
-  },
-  "Rogueport Sewers Town: Dazzle Item 15": {
-    "has": "Star Piece",
-    "count": 100
   }
 }

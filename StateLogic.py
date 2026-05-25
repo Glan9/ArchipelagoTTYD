@@ -278,4 +278,4 @@ def cage_skip(state, player):
     return state.has("Paper Mode", player) or super_boots(state, player)
 
 def hooktail_castle_staircase_superjump(state, player):
-    return can_super_jump(state, player) and tube_curse(state, player) and state.has("Bobbery", player)
+    return super_jump(state, player) and tube_curse(state, player) and state.has("Bobbery", player)
