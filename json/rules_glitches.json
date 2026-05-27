@@ -54,8 +54,7 @@
   "Rogueport Sewers East Entrance: Defend Plus P": {
     "and": [
       {"function": "tube_curse"},
-      {"function": "super_jump"},
-      {"has": "Bobbery"}
+      {"function": "super_jump"}
     ]
   },
   "Rogueport Center: Ultra Hammer": {
@@ -64,11 +63,20 @@
   "Rogueport Eastside: Double Dip": {
     "has": "Ms. Mowz"
   },
+  "Rogueport Eastside: Shine Sprite 1": {
+    "has": "Ms. Mowz"
+  },
   "Rogueport Eastside: Shine Sprite 3": {
     "function": "yoshi_teleport_vertical"
   },
   "Rogueport Center: Old Letter": {
     "function": "yoshi_teleport_vertical"
+  },
+  "Rogueport Eastside: Star Piece 3": {
+    "has": "Ms. Mowz"
+  },
+  "Rogueport Eastside: Star Piece 4": {
+    "has": "Ms. Mowz"
   },
   "Rogueport Eastside: Star Piece 5": {
     "function": "super_boots"
@@ -472,6 +480,13 @@
     "and": [
       {"function": "super_jump"},
       {"has": "Coconut"}
+    ]
+  },
+  "Pirate's Grotto Cortez' Hoard: Sapphire Star": {
+    "and": [
+      {"function": "extended_yoshi_hover"},
+      {"has": "Gate Handle"},
+      {"can_reach": "Pirate's Grotto Staircase: Coin"}
     ]
   },
 

@@ -30,7 +30,7 @@ def petal_left(state, player):
     return state.has("Plane Mode", player)
 
 def petal_left_glitches(state, player):
-    return extended_yoshi_hover(state, player)
+    return extended_yoshi_hover(state, player) or (super_jump(state, player) and tube_curse(state, player))
 
 
 def hooktails_castle(state, player):
@@ -245,10 +245,11 @@ def super_jump(state, player):
     return state.has("Koops", player) and (
         # TRE
         (state.has("Paper Mode", player) and state.has("Elevator Key 2", player))
-        or
+        #or
         # Yoshi teleport into Bobbery's house
         # If you can tube mode in, then you can already do TRE
-        yoshi_teleport_vertical(state, player)
+        # NOTE: verify if this is actually possible
+        #yoshi_teleport_vertical(state, player)
     )
 
 def text_storage(state, player):
